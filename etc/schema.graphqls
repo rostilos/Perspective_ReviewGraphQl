@@ -1,0 +1,12 @@
+type Mutation {
+    newReviewFormSubmit(input: CreateReviewInput!): CreateReviewOutput @resolver(class: "\\Perspective\\ReviewGraphQl\\Model\\Resolver\\CreateProductReview") @doc(description:"New review form")
+}
+
+input CreateReviewInput @doc(description: "Create a new product review.") {
+    product_id: Int! @doc(description: "The ID of the reviewed product.")
+    detail: String! @doc(description: "The review text.")
+}
+
+type CreateReviewOutput {
+   message: String @doc(description: "Status Message")
+}
