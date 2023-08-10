@@ -27,7 +27,7 @@ if (!$block->isEnabled()) {
                     <label for="review_field"
                            class="label"
                     >
-                        <span><?= $escaper->escapeHtml(__('Review')) ?></span>
+                        <span><?= $escaper->escapeHtml(__('Add new review')) ?></span>
                     </label>
                     <div class="control">
                         <textarea name="detail" id="perspective-review-detail" cols="5" rows="3"
@@ -48,7 +48,7 @@ if (!$block->isEnabled()) {
 
 
 <script>
-    require(['jquery', 'Magento_Customer/js/customer-data'], ($, customerData) => {
+    require(['jquery', 'Magento_Customer/js/customer-data', 'mage/validation'], ($, customerData) => {
         const mutation = `
             mutation newReviewFormMutation(
                 $detail: String!,
@@ -65,8 +65,15 @@ if (!$block->isEnabled()) {
             }
         `;
 
-        $("#perspective-review-form").submit((e) => {
+        const dataForm = $('#perspective-review-form');
+
+        dataForm.mage('validation', {});
+
+        dataForm.submit((e) => {
             e.preventDefault();
+            if (!dataForm.validation('isValid')) {
+                return false;
+            }
             sendGraphQLRequest();
         })
 
@@ -75,6 +82,7 @@ if (!$block->isEnabled()) {
                 url: '<?= $block->getBaseUrl() ?>graphql',
                 method: 'POST',
                 contentType: 'application/json',
+                showLoader: true,
                 data: JSON.stringify({
                     query: mutation,
                     variables: {
@@ -93,6 +101,8 @@ if (!$block->isEnabled()) {
                             })
                         }
                     }else{
+                        $('#perspective-review-detail').val('');
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
                         customerData.set('messages', {
                             messages: [{
                                 text: response?.data?.newReviewFormSubmit?.message,
