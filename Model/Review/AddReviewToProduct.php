@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Perspective\ReviewGraphQl\Model\Review;
 
-use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\GraphQl\Exception\GraphQlNoSuchEntityException;
-use Perspective\Review\Model\Review;
 use Perspective\Review\Model\ReviewFactory;
 
 /**
@@ -14,27 +12,18 @@ use Perspective\Review\Model\ReviewFactory;
  */
 class AddReviewToProduct
 {
-    /**
-     * @var ProductRepositoryInterface
-     */
-    private $productRepository;
-
 
     /**
      * @var ReviewFactory
      */
-    private $reviewFactory;
-
+    private ReviewFactory $reviewFactory;
 
     /**
-     * @param ProductRepositoryInterface $productRepository
      * @param ReviewFactory $reviewFactory
      */
     public function __construct(
-        ProductRepositoryInterface $productRepository,
-        ReviewFactory              $reviewFactory,
+        ReviewFactory $reviewFactory,
     ) {
-        $this->productRepository = $productRepository;
         $this->reviewFactory = $reviewFactory;
     }
 

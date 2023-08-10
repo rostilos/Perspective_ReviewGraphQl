@@ -8,7 +8,6 @@ use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Exception\GraphQlAuthorizationException;
 use Magento\Framework\GraphQl\Exception\GraphQlNoSuchEntityException;
 use Magento\Framework\GraphQl\Query\Resolver\ContextInterface;
-use Magento\Framework\GraphQl\Query\Resolver\Value;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Perspective\ReviewGraphQl\Model\Review\AddReviewToProduct;
@@ -24,14 +23,12 @@ class CreateProductReview implements ResolverInterface
     /**
      * @var AddReviewToProduct
      */
-    private $addReviewToProduct;
-
+    private AddReviewToProduct $addReviewToProduct;
 
     /**
      * @var ConfigManager
      */
-    private $configManager;
-
+    private ConfigManager $configManager;
 
     /**
      * @param AddReviewToProduct $addReviewToProduct
@@ -40,9 +37,7 @@ class CreateProductReview implements ResolverInterface
     public function __construct(
         AddReviewToProduct $addReviewToProduct,
         ConfigManager      $configManager,
-    )
-    {
-
+    ) {
         $this->addReviewToProduct = $addReviewToProduct;
         $this->configManager = $configManager;
     }
@@ -56,7 +51,7 @@ class CreateProductReview implements ResolverInterface
      * @param array|null $value
      * @param array|null $args
      *
-     * @return array[]|Value|mixed
+     * @return array
      *
      * @throws GraphQlAuthorizationException
      * @throws GraphQlNoSuchEntityException
@@ -65,12 +60,11 @@ class CreateProductReview implements ResolverInterface
      */
     public function resolve(
         Field       $field,
-                    $context,
+        $context,
         ResolveInfo $info,
         array       $value = null,
         array       $args = null
-    )
-    {
+    ): array {
         if (!$this->configManager->isEnabled()) {
             throw new GraphQlAuthorizationException(__('Creating product reviews are not currently available.'));
         }
@@ -90,7 +84,6 @@ class CreateProductReview implements ResolverInterface
         $data = [
             'detail' => $input['detail'],
         ];
-
 
         return $this->addReviewToProduct->execute($data, $productId, $customerId);
     }
