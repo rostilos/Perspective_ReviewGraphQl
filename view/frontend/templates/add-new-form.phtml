@@ -50,16 +50,23 @@ if (!$block->isEnabled()) {
 <script>
     require(['jquery', 'Magento_Customer/js/customer-data', 'mage/validation'], ($, customerData) => {
         const mutation = `
-            mutation newReviewFormMutation(
+            mutation postNewReviewMutation(
                 $detail: String!,
                 $product_id: Int!
             ) {
-               newReviewFormSubmit(
+               postNewReview(
                    input:{
                        detail: $detail
                        product_id: $product_id
                    }
                ){
+                   review {
+                    detail
+                    product_id
+                    created_at
+                    user_id
+                    review_id
+                   }
                    message
                }
             }
@@ -91,11 +98,12 @@ if (!$block->isEnabled()) {
                     }
                 }),
                 success: function (response) {
-                    if (!response?.data?.newReviewFormSubmit) {
-                        if (response?.errors[0]?.message) {
+                    const data = response?.data?.postNewReview;
+                    if (!data?.review?.review_id) {
+                        if (data?.message) {
                             customerData.set('messages', {
                                 messages: [{
-                                    text: response?.errors[0]?.message || 'Something went wrong',
+                                    text: data?.message || 'Something went wrong',
                                     type: 'error'
                                 }]
                             })
@@ -105,7 +113,7 @@ if (!$block->isEnabled()) {
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                         customerData.set('messages', {
                             messages: [{
-                                text: response?.data?.newReviewFormSubmit?.message,
+                                text: data?.message,
                                 type: 'success'
                             }]
                         })

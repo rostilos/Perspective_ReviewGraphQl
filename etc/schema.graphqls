@@ -1,5 +1,13 @@
+type ProductReview @doc(description: "Contains details of a product review.") {
+    detail: String @doc(description: "The review text.")
+    product_id: String @doc(description: "The summary (title) of the review.")
+    created_at: String @doc(description: "The date the review was created.")
+    user_id: String @doc(description: "UserID.")
+    review_id: String @doc(description: "Review ID.")
+}
+
 type Mutation {
-    newReviewFormSubmit(input: CreateReviewInput!): CreateReviewOutput @resolver(class: "\\Perspective\\ReviewGraphQl\\Model\\Resolver\\CreateProductReview") @doc(description:"New review form")
+    postNewReview(input: CreateReviewInput!): CreateReviewOutput @resolver(class: "\\Perspective\\ReviewGraphQl\\Model\\Resolver\\CreateProductReview") @doc(description:"New review form")
 }
 
 input CreateReviewInput @doc(description: "Create a new product review.") {
@@ -8,5 +16,6 @@ input CreateReviewInput @doc(description: "Create a new product review.") {
 }
 
 type CreateReviewOutput {
-   message: String @doc(description: "Status Message")
+    review: ProductReview @doc(description: "Posted product review")
+    message: String @doc(description: "Status Message")
 }
