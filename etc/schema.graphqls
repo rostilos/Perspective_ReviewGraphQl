@@ -1,13 +1,13 @@
-type ProductReview @doc(description: "Contains details of a product review.") {
+type Mutation {
+    postNewReview(input: CreateReviewInput!): CreateReviewOutput @resolver(class: "\\Perspective\\ReviewGraphQl\\Model\\Resolver\\CreateProductReview") @doc(description:"New review form")
+}
+
+type PostedProductReview {
     detail: String @doc(description: "The review text.")
     product_id: String @doc(description: "The summary (title) of the review.")
     created_at: String @doc(description: "The date the review was created.")
     user_id: String @doc(description: "UserID.")
     review_id: String @doc(description: "Review ID.")
-}
-
-type Mutation {
-    postNewReview(input: CreateReviewInput!): CreateReviewOutput @resolver(class: "\\Perspective\\ReviewGraphQl\\Model\\Resolver\\CreateProductReview") @doc(description:"New review form")
 }
 
 input CreateReviewInput @doc(description: "Create a new product review.") {
@@ -16,6 +16,27 @@ input CreateReviewInput @doc(description: "Create a new product review.") {
 }
 
 type CreateReviewOutput {
-    review: ProductReview @doc(description: "Posted product review")
+    review: PostedProductReview @doc(description: "Posted product review")
     message: String @doc(description: "Status Message")
+}
+
+type Query {
+    getReviewListHtml (
+        product_id: Int!
+    ): PerspectiveReviewsList @resolver(class: "Perspective\\ReviewGraphQl\\Model\\Resolver\\ProductReviewList")
+}
+
+type PerspectiveReviewsList {
+    items: [ProductReview] @doc(description: "An array of product reviews.")
+}
+
+type ProductReview {
+    detail: String! @doc(description: "The review text.")
+    created_at: String! @doc(description: "The date the review was created.")
+    customer: ReviewCustomerInfo
+}
+
+type ReviewCustomerInfo {
+    firstname: String,
+    lastname: String
 }

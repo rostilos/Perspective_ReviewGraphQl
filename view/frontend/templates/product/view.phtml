@@ -1,0 +1,178 @@
+<?php
+
+/** @var View $block */
+
+/** @var Escaper $escaper */
+
+use Perspective\Review\Block\Product\View;
+use Magento\Framework\Escaper;
+
+?>
+<?= $block->getChildHtml() ?>
+<div id="perspective-review-container" data-role="product-review"></div>
+
+<script>
+    require(['jquery', 'Magento_Customer/js/customer-data', 'mage/validation'], ($, customerData) => {
+        const postMutation = `
+                mutation postNewReviewMutation(
+                    $detail: String!,
+                    $product_id: Int!
+                ) {
+                   postNewReview(
+                       input:{
+                           detail: $detail
+                           product_id: $product_id
+                       }
+                   ){
+                       review {
+                        detail
+                        product_id
+                        created_at
+                        user_id
+                        review_id
+                       }
+                       message
+                   }
+                }
+            `;
+        const fetchQuery = `
+                query getReviewListHtml {
+                  getReviewListHtml (product_id: 245) {
+                    items {
+                      detail
+                      created_at
+                      customer {
+                          firstname
+                          lastname
+                      }
+                    }
+                  }
+                }
+            `;
+
+        const graphQlUrl = '<?= $block->getBaseUrl() ?>graphql';
+        const dataForm = $('#perspective-review-form');
+        const reviewListContainer = $('#perspective-review-container');
+
+        function bindEvents() {
+            dataForm.mage('validation', {});
+            dataForm.submit((e) => {
+                e.preventDefault();
+                if (!dataForm.validation('isValid')) {
+                    return false;
+                }
+                postReview();
+            })
+        }
+
+        function fetchReviews() {
+            const data = JSON.stringify({
+                query: fetchQuery
+            });
+            const successCallback = function (response) {
+                const data = response?.data?.getReviewListHtml;
+                console.log(response,data);
+                if (data?.items.length) {
+                    renderHtml(data.items);
+                }
+            }
+            const errorCallback = function (error) {
+                return console.log(error);
+            }
+            sendGraphQLRequest(true, data, successCallback, errorCallback);
+
+        }
+
+        function postReview() {
+            const data = JSON.stringify({
+                query: postMutation,
+                variables: {
+                    detail: $('#perspective-review-detail').val(),
+                    product_id: $('#product_id').val()
+                }
+            });
+            const successCallback = function (response) {
+                const data = response?.data?.postNewReview;
+                if (!data?.review?.review_id) {
+                    if (data?.message) {
+                        customerData.set('messages', {
+                            messages: [{
+                                text: data?.message || 'Something went wrong',
+                                type: 'error'
+                            }]
+                        })
+                    }
+                } else {
+                    $('#perspective-review-detail').val('');
+                    window.scrollTo({top: 0, behavior: 'smooth'});
+                    fetchReviews();
+                    customerData.set('messages', {
+                        messages: [{
+                            text: data?.message,
+                            type: 'success'
+                        }]
+                    })
+                }
+            }
+            const errorCallback = function (error) {
+                customerData.set('messages', {
+                    messages: [{
+                        text: error || 'Something went wrong',
+                        type: 'error'
+                    }]
+                })
+            }
+            sendGraphQLRequest(true, data, successCallback, errorCallback);
+
+        }
+
+        function sendGraphQLRequest(showLoader, data, successCallback, errorCallback) {
+            $.ajax({
+                url: graphQlUrl,
+                method: 'POST',
+                contentType: 'application/json',
+                showLoader,
+                data,
+                success: !function (response) {
+                    successCallback(response);
+                },
+                error: !function (error) {
+                    errorCallback(error);
+                }
+            }).done(function (data) {
+                successCallback(data)
+            }).fail(function (error) {
+                errorCallback(error)
+            });
+        }
+
+        function renderHtml(data) {
+            let html = '';
+            data.forEach((item) => {
+                html += `
+                    <li class="item review-item">
+                          <p>
+                              <small>Review by:</small>
+                              <strong>
+                                ${item.customer.firstname && item.customer.lastname ? (item.customer.firstname + item.customer.lastname) : 'Anonymous'}
+                              </strong>
+                          </p>
+
+                          <p>
+                              ${item?.detail}
+                          </p>
+                          <div>
+                              <small>
+                                  ${item?.created_at}
+                              </small>
+                          </div>
+                      </li>
+                `;
+            })
+            reviewListContainer.html(html).trigger('contentUpdated');
+        }
+
+        bindEvents();
+        fetchReviews();
+    })
+</script>

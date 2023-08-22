@@ -3,6 +3,7 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
-        <referenceBlock name="perspective.reviews.add-new" template="Perspective_ReviewGraphQl::add-new-form.phtml"/>
+        <referenceBlock name="perspective.reviews.add-new" template="Perspective_ReviewGraphQl::review/add-new-form.phtml"/>
+        <referenceBlock name="perspective_reviews.tab" template="Perspective_ReviewGraphQl::product/view.phtml"/>
     </body>
 </page>

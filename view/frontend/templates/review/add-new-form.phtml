@@ -1,0 +1,50 @@
+<?php
+/** @var Perspective\Review\Block\Product\View $block */
+/** @var Magento\Framework\Escaper $escaper */
+
+if (!$block->isEnabled()) {
+    return;
+}
+?>
+<div class="block review-add">
+    <div class="block-title">
+        <strong>
+            <?= $escaper->escapeHtml(__('Write Your Own Review')) ?>
+        </strong>
+    </div>
+    <div class="block-content">
+        <form action="<?= $escaper->escapeUrl($block->getActionUrl()) ?>"
+              class="review-form"
+              method="post"
+              id="perspective-review-form"
+        >
+            <?= $block->getBlockHtml('formkey') ?>
+            <?= $block->getChildHtml('form_fields_before') ?>
+
+            <fieldset class="fieldset review-fieldset">
+                <input type="hidden" name="product_id" id="product_id" value="<?= $block->getProduct()->getId() ?>">
+                <div class="field review-field-text required">
+                    <label for="review_field"
+                           class="label"
+                    >
+                        <span><?= $escaper->escapeHtml(__('Add new review')) ?></span>
+                    </label>
+                    <div class="control">
+                        <textarea name="detail" id="perspective-review-detail" cols="5" rows="3"
+                                  data-validate="{required:true}"></textarea>
+                    </div>
+                </div>
+            </fieldset>
+            <div class="actions-toolbar review-form-actions">
+                <div class="primary actions-primary">
+                    <button type="submit" class="action submit primary">
+                        <span><?= $escaper->escapeHtml(__('Submit Review')) ?></span>
+                    </button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
