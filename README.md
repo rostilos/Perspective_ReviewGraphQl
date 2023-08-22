@@ -6,7 +6,7 @@
 
 ## Module Installation
 ```
-composer config repositories.perspective-magento2-rewiew git git@github.com:rostilos/Perspective_ReviewGraphQl.git
+composer config repositories.perspective-magento2-rewiew-graphql git git@github.com:rostilos/Perspective_ReviewGraphQl.git
 composer require perspective/magento2-rewiew-graphql dev-master
 php bin/magento setup:upgrade
 php bin/magento setup:static-content:deploy
