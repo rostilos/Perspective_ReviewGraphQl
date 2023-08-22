@@ -5,7 +5,6 @@ namespace Perspective\ReviewGraphQl\Mapper;
 
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Framework\DataObject;
-use Perspective\Review\Model\Review;
 
 /**
  * Converts the review data from review object to an associative array
