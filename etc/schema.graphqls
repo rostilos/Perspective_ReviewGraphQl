@@ -1,5 +1,5 @@
 type Mutation {
-    postNewReview(input: CreateReviewInput!): CreateReviewOutput @resolver(class: "\\Perspective\\ReviewGraphQl\\Model\\Resolver\\CreateProductReview") @doc(description:"New review form")
+    postNewReview(input: CreateReviewInput!): CreateReviewOutput @resolver(class: "Perspective\\ReviewGraphQl\\Model\\Resolver\\CreateProductReview") @doc(description:"New review form")
 }
 
 type PostedProductReview {
@@ -23,7 +23,7 @@ type CreateReviewOutput {
 type Query {
     getReviewListHtml (
         product_id: Int!
-    ): PerspectiveReviewsList @resolver(class: "\\Perspective\\ReviewGraphQl\\Model\\Resolver\\ProductReviewList")
+    ): PerspectiveReviewsList @resolver(class: "Perspective\\ReviewGraphQl\\Model\\Resolver\\ProductReviewList")
 }
 
 type PerspectiveReviewsList {
