@@ -37,7 +37,7 @@ use Magento\Framework\Escaper;
             `;
         const fetchQuery = `
                 query getReviewListHtml {
-                  getReviewListHtml (product_id: 245) {
+                  getReviewListHtml (product_id: %productId%) {
                     items {
                       detail
                       created_at
@@ -48,7 +48,7 @@ use Magento\Framework\Escaper;
                     }
                   }
                 }
-            `;
+            `.replace('%productId%',$('#product_id').val());
 
         const graphQlUrl = '<?= $block->getBaseUrl() ?>graphql';
         const dataForm = $('#perspective-review-form');
